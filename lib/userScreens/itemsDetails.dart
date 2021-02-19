@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 
 import 'cart.dart';
+import 'map.dart';
 
 class itemDetail extends StatefulWidget {
 
@@ -380,12 +381,19 @@ class _itemDetailState extends State<itemDetail> {
             children: <Widget>[
               Container(
                 width: (screenSize.width - 20) / 2,
-                child: Text(
-                  "Add to favorites",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => clickUMap(),
+                    ));
+                  },
+                  child: Text(
+                    "Add to favorites",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700
+                    ),
                   ),
                 ),
               ),
