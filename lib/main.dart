@@ -1,3 +1,4 @@
+import 'package:clikcus/userScreens/landind_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:clikcus/userScreens/myHomePage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +12,9 @@ void main() async{
 
 class MyApp extends StatelessWidget {
 
+
+
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -18,10 +22,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(),
+      //home: MyHomePage(),
+      home: Landing_screen(),
     );
   }
 }

@@ -1,7 +1,9 @@
+
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:clikcus/userScreens/resumenOrder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 
 import 'cart.dart';
@@ -19,6 +21,7 @@ class itemDetail extends StatefulWidget {
   String itemColor;
   double itemRating;
   String itemSeller;
+  String itemState;
 
   itemDetail({
     this.itemSubname,
@@ -31,6 +34,7 @@ class itemDetail extends StatefulWidget {
     this.itemColor,
     this.itemRating,
     this.itemSeller,
+    this.itemState,
   });
 
   @override
@@ -38,8 +42,45 @@ class itemDetail extends StatefulWidget {
 }
 
 class _itemDetailState extends State<itemDetail> {
+
+  List imag = List();
+
+  @override
+  void initState() {
+
+    //print("The print is ${widget.itemImages[1]}");
+    for (int i = 0; i<widget.itemImages.length; i++){
+      imag.add(NetworkImage(widget.itemImages[i]));
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    Widget imageC = new Container(
+      height: MediaQuery.of(context).size.width * .6,
+      child: Swiper(
+        pagination: SwiperPagination(),
+        autoplay: true,
+        layout: SwiperLayout.DEFAULT,
+        itemCount: imag.length,
+        itemBuilder: (context, index){
+          return Image.network(
+            widget.itemImages[index],
+            fit: BoxFit.cover,
+          );
+        },
+        itemHeight: 300.0,
+        itemWidth: MediaQuery.of(context).size.width,
+        onTap: (index){
+          List imagesI = widget.itemImages;
+          showDialogFunc(context, imagesI[index]);
+        },
+      )
+    );
+
+
 
     Size screenSize = MediaQuery.of(context).size;
 
@@ -53,39 +94,49 @@ class _itemDetailState extends State<itemDetail> {
             color: Colors.white
         ),
       ),
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: <Widget>[
-          Container(
-            height: 300.0,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage(
-                        widget.itemImage
-                    ),
-                    fit: BoxFit.fitHeight
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(120.0),
-                  bottomLeft: Radius.circular(120.0),
-                )
-            ),
-          ),
-          Container(
-            height: 300.0,
-            decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(50),
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(120.0),
-                  bottomLeft: Radius.circular(120.0),
-                )
-            ),
-          ),
-          SingleChildScrollView(
-            child: Column(
+
+
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Column(
               children: <Widget>[
+
+                //Calling widget Creator
+                imageC,
+
                 SizedBox(
-                  height: 50.0,
+                  height: 15.0,
+                ),
+
+                Card(
+                  child: Container(
+                    width: screenSize.width,
+                    margin: EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.itemName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.w700
+                          ),
+                        ),
+                        SizedBox(height: 15.0,),
+                        Text(
+                          "USD ${widget.itemPrice}",
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700
+                          ),
+                        ),
+                        SizedBox(height: 15.0,),
+                        setText(widget.itemState),
+                      ],
+                    ),
+                  ),
                 ),
                 Card(
                   child: Container(
@@ -97,22 +148,22 @@ class _itemDetailState extends State<itemDetail> {
                         SizedBox(
                           height: 10.0,
                         ),
-                        Text(
-                          widget.itemName,
-                          style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w700
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          widget.itemSubname,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14.0
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              "Categoria: ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0
+                              ),
+                            ),
+                            Text(
+                              widget.itemSubname,
+                              style: TextStyle(
+                                  fontSize: 14.0
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(
                           height: 10.0,
@@ -123,31 +174,23 @@ class _itemDetailState extends State<itemDetail> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.blue,
-                                  size: 20.0,
+                                Text(
+                                  "Vendedor: ",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                    fontWeight: FontWeight.bold
+                                  ),
                                 ),
                                 SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
-                                  //"${widget.itemRating}",
-                                  //"ClickU",
                                   "${widget.itemSeller}",
                                   style: TextStyle(
-                                      color: Colors.black
+                                      color: Colors.black,
                                   ),
                                 ),
                               ],
-                            ),
-                            Text(
-                              "USD ${widget.itemPrice}",
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.red[500],
-                                  fontWeight: FontWeight.w700
-                              ),
                             ),
                           ],
                         ),
@@ -155,47 +198,6 @@ class _itemDetailState extends State<itemDetail> {
                           height: 10.0,
                         )
                       ],
-                    ),
-                  ),
-                ),
-                Card(
-                  child: Container(
-                    width: screenSize.width,
-                    height: 150.0,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: widget.itemImages.length,
-                        //itemCount: widget.itemImages.length,
-                        itemBuilder: (context, index){
-                          return GestureDetector(
-                            onTap: (){
-
-                              List imagesI = widget.itemImages;
-                              print(imagesI.length);
-                              showDialogFunc(context, imagesI[index]);
-                            },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(left: 5.0, right: 5.0),
-                                  height: 140.0,
-                                  width: 100.0,
-                                  child: //Image.network(widget.itemImage),
-                                  Image.network(widget.itemImages[index])
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(left: 5.0, right: 5.0),
-                                  height: 140.0,
-                                  width: 100.0,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.withAlpha(50),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        }
                     ),
                   ),
                 ),
@@ -212,7 +214,7 @@ class _itemDetailState extends State<itemDetail> {
                         Text(
                           "Description",
                           style: TextStyle(
-                              fontSize: 18.0,
+                              fontSize: 20.0,
                               fontWeight: FontWeight.w700
                           ),
                         ),
@@ -220,7 +222,7 @@ class _itemDetailState extends State<itemDetail> {
                         Text(
                           widget.itemDescription,
                           style: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.w400
                           ),
                         ),
@@ -330,42 +332,17 @@ class _itemDetailState extends State<itemDetail> {
                   ),
                 )
               ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
-      floatingActionButton: Stack(
-        alignment: Alignment.topLeft,
-        children: <Widget>[
-          /*
-          FloatingActionButton(
-            onPressed: (){
-              Navigator.of(context).push(
-                  CupertinoPageRoute(
-                      builder: (BuildContext context){
-                        return ClickUCart();
-                      }
-                  )
-              );
-            },
-            child: Icon(Icons.shopping_cart),
-          ),
 
-           */
-          CircleAvatar(
-            radius: 10.0,
-            backgroundColor: Colors.red.withOpacity(.1),
-            child: Text(
-              "",
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Colors.white,
-              ),
-            ),
-          )
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+
+
+
+
+      /*
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).primaryColor,
         elevation: 00.0,
@@ -377,26 +354,8 @@ class _itemDetailState extends State<itemDetail> {
               color: Theme.of(context).primaryColor
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                width: (screenSize.width - 20) / 2,
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => clickUMap(),
-                    ));
-                  },
-                  child: Text(
-                    "Add to favorites",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700
-                    ),
-                  ),
-                ),
-              ),
               Container(
                 width: (screenSize.width-20) / 2,
                 child: GestureDetector(
@@ -412,11 +371,11 @@ class _itemDetailState extends State<itemDetail> {
                     ));
                   },
                   child: Text(
-                    "Order now",
+                    "Comprar",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700
+                        fontWeight: FontWeight.w700,
+                      fontSize: 20.0
                     ),
                   ),
                 ),
@@ -425,7 +384,83 @@ class _itemDetailState extends State<itemDetail> {
           ),
         ),
       ),
+      */
+
+      floatingActionButton: Container(
+        width: 70.0,
+        height: 70.0,
+        child: FloatingActionButton(
+          elevation: 00.0,
+          backgroundColor: Colors.white.withOpacity(.1),
+          onPressed: (){
+
+            if(widget.itemState == "Agotado"){
+              AwesomeDialog(
+                  context: context,
+                  headerAnimationLoop: true,
+                  animType: AnimType.BOTTOMSLIDE,
+                  title: 'Agotado',
+                  desc: "Lo sentimos, por ahora el producto esta agotado",
+              ).show();
+            }else if(widget.itemState == "Proximamente"){
+              AwesomeDialog(
+                context: context,
+                headerAnimationLoop: true,
+                animType: AnimType.BOTTOMSLIDE,
+                title: 'Próximamente',
+                desc: "Espéralo, ya mismo llega",
+              ).show();
+            }
+            else{
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => clicUOrderNow(
+                    widget.itemName,
+                    widget.itemImage,
+                    widget.itemPrice,
+                    widget.itemSize,
+                    widget.itemColor,
+                  )
+              ));
+            }
+
+
+
+          },
+          child: Container(
+            child: Image(image: AssetImage("assets/Logo11.png"),
+            color: Colors.deepOrange,
+            ),
+          ),
+        ),
+      ),
     );
+  }
+
+
+  setText(String state){
+
+
+    if(state=="Agotado"){
+      return Text(
+        state,
+        style: TextStyle(
+          color: Colors.red,
+          fontSize: 25.0,
+          fontWeight: FontWeight.bold
+        ),
+      );
+    }else{
+      return Text(
+        state,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 15.0,
+        ),
+      );
+    }
+
+
+
   }
 
   showDialogFunc(context, itemImage) {
@@ -462,5 +497,6 @@ class _itemDetailState extends State<itemDetail> {
       }
     );
   }
+
 
 }

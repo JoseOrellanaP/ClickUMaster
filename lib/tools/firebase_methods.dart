@@ -190,6 +190,34 @@ class FirebaseMethods implements AppMethods{
   }
 
   @override
+  Future<String> addNewLocation({Map newLocation}) async{
+
+    String documentID;
+
+    await firestore.collection(storeLocations).add(newLocation).then((documentRef){
+      documentID = documentRef.id;
+
+    });
+
+    return documentID;
+
+  }
+
+  @override
+  Future<String> addNewStoreL({Map newLocation}) async{
+
+    String documentID;
+
+    await firestore.collection(storesList).add(newLocation).then((documentRef){
+      documentID = documentRef.id;
+
+    });
+
+    return documentID;
+
+  }
+
+  @override
   Future<List<String>> uploadArticleImages({List<File> imageList, String docID}) async{
 
 
@@ -229,6 +257,25 @@ class FirebaseMethods implements AppMethods{
 
     return msg;
   }
+
+  @override
+  Future<String> updateData({String id, Map newDataP}) {
+    // TODO: implement updateData
+    Firestore.instance
+        .collection(appProducts)
+        .doc(id)
+        .update(newDataP)
+        .catchError((e){
+      print(e);
+    });
+  }
+
+
+
+
+
+
+
 
 
 }

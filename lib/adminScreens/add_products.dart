@@ -27,6 +27,10 @@ class _AddProductsState extends State<AddProducts> {
   String selectedCategory;
   List<String> categoryList = new List();
 
+  List<DropdownMenuItem<String>> dropDownMenuStates;
+  String selectedStates;
+  List<String> statesList = new List();
+
   List<File> imageList;
 
   TextEditingController productTitleController = TextEditingController();
@@ -43,12 +47,15 @@ class _AddProductsState extends State<AddProducts> {
     colorList = new List.from(localColors);
     sizesList = new List.from(localSizes);
     categoryList = new List.from(localCategories);
+    statesList = new List.from(productMode);
     dropDownMenuColors = buildAndGetDropDownItems(colorList);
     dropDownCategory = buildAndGetDropDownItems(categoryList);
     dropDownMenuSizes = buildAndGetDropDownItems(sizesList);
+    dropDownMenuStates = buildAndGetDropDownItems(statesList);
     selectedColors = dropDownMenuColors[0].value;
     selectedSizes = dropDownMenuSizes[0].value;
     selectedCategory = dropDownCategory[0].value;
+    selectedStates = dropDownMenuStates[0].value;
 
   }
 
@@ -143,7 +150,14 @@ class _AddProductsState extends State<AddProducts> {
                     selectedItem: selectedSizes,
                     dropDownCategories: dropDownMenuSizes,
                     changedDropDownCategory: changeDropDownSizes
-                )
+                ),
+                productDropDown(
+                    textTitle: "Estado",
+                    selectedItem: selectedStates,
+                    dropDownCategories: dropDownMenuStates,
+                    changedDropDownCategory: changeDropDownStates
+                ),
+
               ],
             ),
             SizedBox(
@@ -173,6 +187,13 @@ class _AddProductsState extends State<AddProducts> {
     setState(() {
       selectedSizes = selectedSize;
       print(selectedSizes);
+    });
+  }
+
+  void changeDropDownStates(String selectedStat){
+    setState(() {
+      selectedStates = selectedStat;
+      print(selectedStates);
     });
   }
 
@@ -265,7 +286,7 @@ class _AddProductsState extends State<AddProducts> {
       productCat: selectedCategory,
       productColor: selectedColors,
       productSize: selectedSizes,
-      productState: "Stock",
+      productState: selectedStates,
       productSeller: sellerController.text,
     };
 

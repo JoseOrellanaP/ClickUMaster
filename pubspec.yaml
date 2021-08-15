@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+4
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -29,7 +29,7 @@ dependencies:
   firebase_auth: ^0.18.0+1
   cloud_firestore: "^0.14.0+2"
   firebase_core: ^0.5.3
-  shared_preferences: "^0.4.2"
+  shared_preferences: ^0.5.12
   image_picker: ^0.6.7+15
   firebase_storage: ^5.0.0
   url_launcher: ^5.5.0
@@ -38,6 +38,18 @@ dependencies:
 
   google_maps_flutter: ^0.5.33
   permission_handler: ^5.1.0+2
+  flutter_swiper: ^1.1.6
+
+  floating_pullup_card: ^0.2.2
+  awesome_dialog: ^1.1.0
+
+  rate_my_app: ^0.7.0
+
+  new_version: ^0.0.6
+
+
+  package_info: ^0.4.3+4
+  firebase_remote_config: ^0.4.3
 
 
 
@@ -49,7 +61,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
+flutter_icons:
+  image_path: "assets/logo_co.png"
+  android: true
+  ios: true
 
 
 # For information on the generic Dart part of this file, see the
@@ -74,6 +89,14 @@ flutter:
     - assets/Logo.png
     - assets/imageJose.jpg
     - assets/imageRoger.jpeg
+    - assets/map.png
+    - assets/Logo31.png
+    - assets/Logo11.png
+    - assets/logo_co.png
+    - assets/mark.png
+    - assets/clicku_gif.gif
+    - assets/clicku_gif2.gif
+    - assets/listas.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

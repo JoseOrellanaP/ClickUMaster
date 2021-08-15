@@ -2,6 +2,8 @@
 const String usersData = "usersData";
 const String appProducts = "appProducts";
 const String articleNews = "articleNews";
+const String storeLocations = "storeLocations";
+const String storesList = "storesList";
 
 // Database Collections
 const String userCollection = "userCollection";
@@ -29,6 +31,14 @@ const String productState = "ProductState";
 const String productSeller = "ProductSeller";
 
 
+// Location data
+
+const String storeName2 = "StoreName";
+const String storePhoneNumber2 = "PhoneNumber";
+const String storeOwnerName2 = "OwnerName";
+const String storeLongitude2 = "StoreLongitude";
+const String storeLatitude2 = "StoreLatitude";
+
 // app data
 const String successful = "successful";
 const String error = "error";
@@ -54,4 +64,14 @@ List<String> localCategories = [
   "Celulares/Tablets",
   "Varios"
 
+];
+
+List<String> productMode = [
+  'Stock',
+  'Nuevo',
+  'Descuento',
+  'Trending',
+  'Proximamente',
+  'Usado',
+  'Agotado'
 ];

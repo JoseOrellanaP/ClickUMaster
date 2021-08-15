@@ -14,6 +14,12 @@ abstract class AppMethods{
 
   Future<String> addNewArticle({Map newArticle});
 
+  Future<String> addNewLocation({Map newLocation});
+
+  Future<String> addNewStoreL({Map newLocation});
+
+  Future<String> updateData({String id, Map newDataP});
+
   Future<List<String>> uploadProductImages({List<File> imageList, String docID});
 
   Future<List<String>> uploadArticleImages({List<File> imageList, String docID});

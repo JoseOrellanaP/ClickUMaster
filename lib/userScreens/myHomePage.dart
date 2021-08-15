@@ -2,6 +2,7 @@ import 'dart:developer';
 
 
 
+
 import 'package:clikcus/adminScreens/admin_home.dart';
 import 'package:clikcus/adminScreens/loginLogoutAdmin.dart';
 import 'package:clikcus/tools/app_data.dart';
@@ -9,9 +10,12 @@ import 'package:clikcus/tools/app_methods.dart';
 import 'package:clikcus/tools/app_tools.dart';
 import 'package:clikcus/tools/firebase_methods.dart';
 import 'package:clikcus/tools/store.dart';
+import 'package:clikcus/userScreens/frecuentquestion.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rate_my_app/rate_my_app.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'favorites.dart';
 import 'messages.dart';
 import 'cart.dart';
@@ -23,12 +27,22 @@ import 'address.dart';
 import 'aboutUs.dart';
 import 'loginLogout.dart';
 import 'itemsDetails.dart';
+import 'package:new_version/new_version.dart';
 
 
 class MyHomePage extends StatefulWidget {
+
+  int selectedTab;
+
+
+
+  MyHomePage(this.selectedTab);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
+
+
 
 class _MyHomePageState extends State<MyHomePage> {
   BuildContext context;
@@ -39,11 +53,89 @@ class _MyHomePageState extends State<MyHomePage> {
   AppMethods appMethods = new FirebaseMethods();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+
+
+  RateMyApp _rateMyApp = RateMyApp(
+    preferencesPrefix: 'rateMyApp_',
+    minDays: 3,
+    minLaunches: 7,
+    remindDays: 2,
+    remindLaunches: 5,
+  );
+
+
   @override
   void initState() {
     getCurrentUser();
     super.initState();
+
+
+    _rateMyApp.init().then((_){
+      if(_rateMyApp.shouldOpenDialog){
+        _rateMyApp.showStarRateDialog(
+          context,
+          title: "¿Estás disfrutando nuestra app?",
+          message: "Por favor, califica la app",
+          actionsBuilder: (context, stars){
+            return [
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: (){
+                  if(stars != null) {
+                    /*
+                    _rateMyApp.doNotOpenAgain == true;
+                    _rateMyApp.save().then((v) => Navigator.pop(context));
+
+                     */
+                    _rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed).then((_) => Navigator.pop(context));
+
+                    if(stars<=3){
+                      print('Navigate to contact us');
+                    }else if(stars <= 5){
+                      print('leave a Review Dialog');
+                      launch("https://play.google.com/store/apps/details?id=com.store.clikcus");
+                    }
+
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              )
+            ];
+          },
+          dialogStyle: DialogStyle(
+            titleAlign: TextAlign.center,
+            messageAlign: TextAlign.center,
+            messagePadding: EdgeInsets.only(bottom: 20.0),
+          ),
+          starRatingOptions: StarRatingOptions(),
+        );
+      }
+    });
+
+
   }
+
+  void _checkVersion() async{
+    final newVersion = NewVersion(
+      //androidId: "com.store.clikcus",
+      androidId: "com.facebook.katana",
+    );
+
+
+    newVersion.showAlertIfNecessary();
+
+    /*
+    //final status = await newVersion.getVersionStatus();
+    newVersion.showUpdateDialog(
+        await newVersion.getVersionStatus(),
+    );
+
+     */
+
+
+  }
+
 
   Future getCurrentUser() async{
 
@@ -70,20 +162,26 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
+
     this.context = context;
 
     return DefaultTabController(
       length: 6,
+      initialIndex: widget.selectedTab,
       child: new Scaffold(
         appBar: new AppBar(
+          elevation: 0,
           bottom: TabBar(
-
             isScrollable: true,
-            unselectedLabelColor: Colors.white.withOpacity(0.3),
-            indicatorColor: Colors.white,
-
+            unselectedLabelColor: Colors.white70,
+            labelColor: Colors.black,
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicator: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.deepOrange, Colors.deepOrange]),
+                borderRadius: BorderRadius.circular(50),
+                color: Colors.redAccent),
             onTap: (index){
-
             },
             tabs: [
               Tab(
@@ -93,6 +191,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   fontSize: 18.0,
                 ),
               ),
+                icon: Icon(Icons.home,
+                  color: Colors.black87,),
               ),
               Tab(
                 child: Text(
@@ -101,6 +201,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 18.0,
                   ),
                 ),
+                icon: Icon(Icons.laptop,
+                  color: Colors.black87,),
               ),
               Tab(
                 child: Text(
@@ -109,6 +211,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 18.0,
                   ),
                 ),
+                icon: Icon(Icons.headset_mic,
+                  color: Colors.black87,),
               ),
               Tab(
                 child: Text(
@@ -117,6 +221,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 18.0,
                   ),
                 ),
+                icon: Icon(Icons.device_hub,
+                  color: Colors.black87,),
               ),
               Tab(
                 child: Text(
@@ -125,6 +231,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 18.0,
                   ),
                 ),
+                icon: Icon(Icons.phone_android,
+                  color: Colors.black87,),
               ),
               Tab(
                 child: Text(
@@ -133,12 +241,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 18.0,
                   ),
                 ),
+                icon: Icon(Icons.airplay,
+                  color: Colors.black87,),
               ),
             ],
           ),
           centerTitle: true,
+
           title: GestureDetector(
             onLongPress: logAdmin,
+            /*
             child: Text(
                 "ClickU",
               style: TextStyle(
@@ -146,7 +258,44 @@ class _MyHomePageState extends State<MyHomePage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+
+             */
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(
+                  image: AssetImage("assets/logo_co.png"),
+                  fit: BoxFit.contain,
+                  color: Colors.black,
+                  height: 62.0,
+                ),
+                SizedBox(width: 10.0,),
+                Text("ClickU",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30.0
+                  ),)
+              ],
+            ),
+
           ),
+
+           /*
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/Logo.png',
+                fit: BoxFit.contain,
+                height: 62,
+              ),
+
+            ],
+
+          ),
+
+
+            */
           actions: <Widget>[
             /*
             IconButton(
@@ -403,6 +552,25 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
 
+          /*
+          bottomNavigationBar: BottomNavigationBar(
+              currentIndex: 0,
+              iconSize: 30.0,
+              fixedColor: Colors.black,
+              unselectedItemColor: Colors.black,
+              backgroundColor: Theme.of(context).primaryColor,
+              items: [
+                BottomNavigationBarItem(
+                    title: Text('Noticias'), icon: Icon(Icons.info_outline)),
+                BottomNavigationBarItem(
+                    title: Text('Sobre Nosotros'), icon: Icon(Icons.accessibility_new)),
+                BottomNavigationBarItem(
+                    title: Text('Preguntas'), icon: Icon(Icons.question_answer)),
+
+              ]),
+
+           */
+
         /*
         floatingActionButton: Stack(
           alignment: Alignment.topLeft,
@@ -568,6 +736,24 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
 
               ),
+              ListTile(
+                trailing: CircleAvatar(
+                  child: Icon(Icons.question_answer,
+                    color: Colors.white,
+                    size: 20,),
+                ),
+                title: Text("Preguntas Frecuentes"),
+                onTap: (){
+                  Navigator.of(context).push(
+                      CupertinoPageRoute(
+                          builder: (BuildContext){
+                            return clickUFrequentQ();
+                          }
+                      )
+                  );
+                },
+
+              ),
 
               /*
               ListTile(
@@ -687,6 +873,7 @@ class _MyHomePageState extends State<MyHomePage> {
               itemColor: document[productColor],
               itemDescription: document[productDesc],
               itemSeller: document[productSeller],
+              itemState: document[productState],
 
             )
         ));
@@ -698,22 +885,29 @@ class _MyHomePageState extends State<MyHomePage> {
             Stack(
               alignment: FractionalOffset.bottomCenter,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fitWidth,
-                          image: NetworkImage(
-                            productImage[0]
-                              //storeItems[index].itemImage,
-                            //document[productImages]
+                Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.fitWidth,
+                              colorFilter:getFilter(document[productState]),
+                              image: NetworkImage(
+                                productImage[0],
+                                  //storeItems[index].itemImage,
+                                //document[productImages]
+                              )
                           )
-                      )
-                  ),
+                      ),
+                    ),
+                    Center(child: getText(document[productState])),
+                  ],
                 ),
                 Container(
                   height: 50.0,
                   width: 150.0,
-                  color: Colors.black.withAlpha(100),
+                  //color: Colors.black.withAlpha(70),
+                  color: Colors.lightBlueAccent.withAlpha(100),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -723,9 +917,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           "${document[productTitle]}",
                           //"${storeItems[index].itemName.substring(0, 8)}...",
                           style: TextStyle(
-                              fontWeight: FontWeight.w700,
                               fontSize: 16.0,
-                              color: Colors.white
+                              color: Colors.black,
+                            fontStyle: FontStyle.normal
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -736,77 +930,90 @@ class _MyHomePageState extends State<MyHomePage> {
                         //"N${storeItems[index].itemPrice}",
                         "USD ${document[productPrice]}",
                         style: TextStyle(
-                          color: Colors.red[500],
-                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                )
+                ),
+
               ],
             ),
-            
-            Column(
-              children: [
-                Text(
-                  //todo put state
-                  //document[productState],
-                  document[productState],
-                  style: TextStyle(
-                    color: setColor(document[productState]),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: 30.0,
-                      width: 60.0,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(5.0),
-                            bottomRight: Radius.circular(5.0),
-                          )
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          /*
-                          Icon(
-                            Icons.star,
-                            color: Colors.blue,
-                            size: 20.0,
-                          ),
-                          Text(
-                            "${storeItems[index].itemRating}",
-                            style: TextStyle(color: Colors.white),
-                          ),
 
-                           */
-                        ],
-                      ),
-
+            /*
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    //todo put state
+                    //document[productState],
+                    document[productState],
+                    style: TextStyle(
+                      color: setColor(document[productState]),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
-                    SizedBox(width: 3.0,),
-                    /*
-                    IconButton(
-                      icon: Icon(
-                          Icons.favorite_border,
-                          color: Colors.blue
+                  ),
+                  /*
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 30.0,
+                        width: 60.0,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(5.0),
+                              bottomRight: Radius.circular(5.0),
+                            )
+                        ),
+                        /*
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            /*
+                            Icon(
+                              Icons.star,
+                              color: Colors.blue,
+                              size: 20.0,
+                            ),
+                            Text(
+                              "${storeItems[index].itemRating}",
+                              style: TextStyle(color: Colors.white),
+                            ),
+
+                             */
+                          ],
+                        ),
+
+                         */
+
                       ),
-                      onPressed: (){},
-                    )
+                      SizedBox(width: 3.0,),
+                      /*
+                      IconButton(
+                        icon: Icon(
+                            Icons.favorite_border,
+                            color: Colors.blue
+                        ),
+                        onPressed: (){},
+                      )
 
-                     */
-                  ],
-                ),
+                       */
+                    ],
+                  ),
+
+                   */
 
 
-              ],
+                ],
+              ),
             ),
+
+             */
 
 
           ],
@@ -834,6 +1041,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemColor: document[productColor],
                 itemDescription: document[productDesc],
                 itemSeller: document[productSeller],
+                itemState: document[productState],
 
               )
           ));
@@ -845,22 +1053,29 @@ class _MyHomePageState extends State<MyHomePage> {
               Stack(
                 alignment: FractionalOffset.bottomCenter,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.fitWidth,
-                            image: NetworkImage(
-                                productImage[0]
-                              //storeItems[index].itemImage,
-                              //document[productImages]
+                  Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.fitWidth,
+                                colorFilter:getFilter(document[productState]),
+                                image: NetworkImage(
+                                    productImage[0],
+                                  //storeItems[index].itemImage,
+                                  //document[productImages]
+                                )
                             )
-                        )
-                    ),
+                        ),
+                      ),
+                      Center(child: getText(document[productState])),
+                    ],
                   ),
                   Container(
                     height: 50.0,
                     width: 150.0,
-                    color: Colors.black.withAlpha(100),
+                    //color: Colors.black.withAlpha(70),
+                    color: Colors.lightBlueAccent.withAlpha(100),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -869,9 +1084,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Text(
                             "${document[productTitle]}",
                             style: TextStyle(
-                                fontWeight: FontWeight.w700,
                                 fontSize: 16.0,
-                                color: Colors.white
+                                fontStyle: FontStyle.normal,
+                                color: Colors.black
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -882,76 +1097,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           //"N${storeItems[index].itemPrice}",
                           "USD ${document[productPrice]}",
                           style: TextStyle(
-                            color: Colors.red[500],
-                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0
                           ),
                         ),
                       ],
                     ),
-                  )
-                ],
-              ),
-              Column(
-                children: [
-                  Text(
-                    //todo put state
-                    //document[productState],
-                    document[productState],
-                    style: TextStyle(
-                      color: setColor(document[productState]),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: 30.0,
-                        width: 60.0,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(5.0),
-                              bottomRight: Radius.circular(5.0),
-                            )
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            /*
-                            Icon(
-                              Icons.star,
-                              color: Colors.blue,
-                              size: 20.0,
-                            ),
-                            Text(
-                              "${storeItems[index].itemRating}",
-                              style: TextStyle(color: Colors.white),
-                            ),
-
-                             */
-                          ],
-                        ),
-
-                      ),
-                      SizedBox(width: 3.0,),
-                      /*
-                      IconButton(
-                        icon: Icon(
-                            Icons.favorite_border,
-                            color: Colors.blue
-                        ),
-                        onPressed: (){},
-                      )
-
-                       */
-                    ],
-                  ),
-
-
                 ],
+
               ),
+
 
 
             ],
@@ -970,6 +1127,33 @@ class _MyHomePageState extends State<MyHomePage> {
       return Colors.brown[900];
     }
 
+  }
+
+  getFilter(String state) {
+
+    if (state.toLowerCase() == "agotado"){
+      return ColorFilter.mode(Colors.black, BlendMode.saturation);
+    }else{
+      return null;
+    }
+  }
+
+  getText(String state) {
+    if (state.toLowerCase() == "agotado"){
+      return Transform.rotate(
+        angle: 3.14 / 4,
+        child: Text(
+          state,
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 35.0,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+      );
+    }else{
+      return null;
+    }
   }
 
 
