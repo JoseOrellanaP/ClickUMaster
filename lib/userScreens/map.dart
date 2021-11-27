@@ -1,3 +1,7 @@
+
+
+
+
 import 'dart:async';
 
 import 'package:clikcus/tools/app_data.dart';
@@ -6,7 +10,7 @@ import 'package:clikcus/tools/lauchSocialN.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:floating_pullup_card/floating_pullup_card.dart';
+import 'package:floating_pullup_card/floating_pullup_card.dart' as pullUp;
 
 class clickUMap extends StatefulWidget {
 
@@ -172,7 +176,7 @@ class _clickUMapState extends State<clickUMap> {
           backgroundColor: Colors.orange,
         ),
         
-        body: FloatingPullUpCardLayout(
+        body: pullUp.FloatingPullUpCardLayout(
           child: Stack(
             children: [
               GoogleMap(
@@ -311,7 +315,7 @@ class _clickUMapState extends State<clickUMap> {
           width: MediaQuery.of(context).size.width*.95,
           cardColor: Colors.orange,
           borderRadius: BorderRadius.circular(25.0),
-          state: FloatingPullUpState.collapsed,
+          //state: floatingPull.collapsed,
           uncollpsedStateOffset: (maxHeight) => MediaQuery.of(context).size.height*.5,
 
         ),

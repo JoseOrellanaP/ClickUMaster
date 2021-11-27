@@ -1,4 +1,5 @@
 import 'package:clikcus/userScreens/landind_screen.dart';
+import 'package:clikcus/userScreens/landind_screen2.dart';
 import 'package:flutter/material.dart';
 import 'package:clikcus/userScreens/myHomePage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       //home: MyHomePage(),
-      home: Landing_screen(),
+      home: Landing_screen2(),
     );
   }
 }

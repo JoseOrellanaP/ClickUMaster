@@ -1,3 +1,5 @@
+/*
+
 import 'package:clikcus/tools/app_data.dart';
 import 'package:clikcus/tools/getQueries.dart';
 import 'package:clikcus/tools/lauchSocialN.dart';
@@ -216,3 +218,4 @@ class _clickURetiroState extends State<clickURetiro> {
 
 
 }
+*/
