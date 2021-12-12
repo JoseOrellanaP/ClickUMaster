@@ -15,7 +15,7 @@ import 'package:new_version/new_version.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'fastLists.dart';
+
 import 'itemsDetails.dart';
 import 'myHomePage.dart';
 

@@ -1,4 +1,4 @@
-import 'package:clikcus/userScreens/landind_screen.dart';
+
 import 'package:clikcus/userScreens/landind_screen2.dart';
 import 'package:flutter/material.dart';
 import 'package:clikcus/userScreens/myHomePage.dart';

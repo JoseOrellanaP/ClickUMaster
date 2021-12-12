@@ -264,6 +264,7 @@ class _clicUOrderNowState extends State<clicUOrderNow> {
                 ),
               ),
             ),
+            
             SizedBox(height: 55.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
