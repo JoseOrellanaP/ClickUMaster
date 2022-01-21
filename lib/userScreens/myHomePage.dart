@@ -354,7 +354,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: TabBarView(
           children: [
             StreamBuilder(
-                stream: firestore.collection(appProducts).snapshots(),
+                stream: firestore.collection(appProducts).orderBy(productState,descending: true).snapshots(),
                 builder: (context, snapshot){
                   if(!snapshot.hasData){
                     return Center(
@@ -373,7 +373,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       String cat = "Laptops";
                       //final DocumentSnapshot document = snapshot.data.docs;
 
-
+                      
                       return createList(dataCount, snapshot);
                     }
                   }
@@ -381,7 +381,7 @@ class _MyHomePageState extends State<MyHomePage> {
             StreamBuilder(
               //stream: firestore.collection(appProducts).snapshots(),
                 stream: firestore.collection(appProducts).where("ProductCat",
-                    isEqualTo: "Laptops").snapshots(),
+                    isEqualTo: "Laptops").orderBy(productState, descending: true).snapshots(),
                 builder: (context, snapshot){
                   if(!snapshot.hasData){
                     return Center(
@@ -406,6 +406,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         itemBuilder: (context, index){
                           final DocumentSnapshot document =
                           snapshot.data.docs[index];
+                          
                           return buildProducts(context, index, document);
                         },
                       );
