@@ -15,8 +15,89 @@ class _AppProductsState extends State<AppProducts> {
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+
+
+
+List<Map<String, dynamic>> _foundData = [];
+
+
+//String filter = 'Laptops';
+String filter = '';
+
+bool dummy;
+
+
+
+@override
+void initState() {
+    
+    // At the beggining all users are show
+
+    dummy = false;
+    
+
+
+    
+  }
+
+
+  void _runFilter(String valueEntered){
+    if(valueEntered.isEmpty){
+      filter = '';
+    }else{
+      filter = valueEntered;
+    }
+
+    // Refresh the UI
+    setState(() {
+      filter = valueEntered;
+    });
+
+  }
+
+  
+
+ 
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
+
+    //_runFilter('Laptop');
+    if(filter.isEmpty){
+      _runFilter("Laptop");
+    }
+
+
+
+
+    getFilter(String filter){
+
+
+      final CollectionReference noticeCollection=Firestore.instance.collection('appProducts');
+
+      if(dummy == false){
+        final Query unapproved = noticeCollection;
+        dummy = true;
+        return unapproved.snapshots();
+
+      }else{
+        final Query unapproved = noticeCollection.where(productTitle, isGreaterThanOrEqualTo: filter)
+      .where(productTitle, isLessThan: filter + 'z');
+        return unapproved.snapshots();
+
+      }
+
+      
+    };
+
+
+  
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -24,29 +105,57 @@ class _AppProductsState extends State<AppProducts> {
         ),
         centerTitle: true,
       ),
-      body: StreamBuilder(
-          stream: firestore.collection(appProducts).snapshots(),
-          builder: (context, snapshot){
-            if(!snapshot.hasData){
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryColor
-                  ),
-                ),
-              );
-            }else{
-              final int dataCount = snapshot.data.docs.length;
-              print("data count $dataCount");
-              if(dataCount == 0){
-                return noDataFound();
-              }else{
-                String cat = "Laptops";
-                //final DocumentSnapshot document = snapshot.data.docs;
-                return createList(dataCount, snapshot);
-              }
-            }
-          }),
+      body: Column(
+        children: [
+
+
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 8.0),
+            child: TextField(
+              onChanged: (value) => _runFilter(value),
+              decoration: const InputDecoration(
+                labelText: "Search",
+                suffixIcon: Icon(Icons.search),
+              ),
+              textCapitalization: TextCapitalization.sentences,
+            ),
+          ),
+
+
+
+
+
+
+          Expanded(
+            child: StreamBuilder(
+                //stream: firestore.collection(appProducts).snapshots(),
+                //stream: unapproved.snapshots(),
+                stream: getFilter(filter),
+                builder: (context, snapshot){
+                  if(!snapshot.hasData){
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).primaryColor
+                        ),
+                      ),
+                    );
+                  }else{
+                    final int dataCount = snapshot.data.docs.length;
+                    print("data count $dataCount");
+                    if(dataCount == 0){
+                      return noDataFound();
+                    }else{
+                      String cat = "Laptops";
+                      //final DocumentSnapshot document = snapshot.data.docs;
+                      return createList(dataCount, snapshot);
+                    }
+                  }
+                }),
+          ),
+        ],
+      ),
     );
   }
 
