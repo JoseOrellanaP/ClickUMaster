@@ -400,18 +400,6 @@ getLists(BuildContext context, trendingMap, outStockMap, newestMap,
             discount: discountMap,
 
 
-            /*
-            imageList: listImages,
-            titleList: listTitle,
-            listCategory: listCategory,
-            listPrices: listPrices,
-            listSizes: listSizes,
-            listColor: listColor,
-            listDesc: listDesc,
-            listSeller: listSeller,
-            listState: listState,
-
-             */
 
           )
       )
