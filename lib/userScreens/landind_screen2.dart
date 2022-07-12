@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+
 import 'package:clikcus/adminScreens/loginLogoutAdmin.dart';
 import 'package:clikcus/tools/app_data.dart';
 import 'package:clikcus/tools/getQueries.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:new_version/new_version.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'itemsDetails.dart';
 import 'myHomePage.dart';
@@ -58,6 +60,28 @@ class _Landing_screenState extends State<Landing_screen2> {
 
   var trendingMap2, newest, soonStock, discount;
 
+
+  List<String> images = [
+    'https://drive.google.com/uc?export=view&id=1q5AhCZQ8ekr36ssB8bnouPRPUI-EGx6j',
+    'https://drive.google.com/uc?export=view&id=1fu5p-2bXCs0vZf4I652DM_-EBfuAJ6lP',
+    'https://drive.google.com/uc?export=view&id=1paJQ4L__yt_u7zIibCCTxuUXYKZ2LIWy',
+    'https://drive.google.com/uc?export=view&id=1C3FzQM7xA8Wd9HAdJF7qGEykMOmtIlxy',
+    'https://drive.google.com/uc?export=view&id=1uqOXTSr5BSdJWQwiG6UNF8ojRx3kxspn',
+    'https://drive.google.com/uc?export=view&id=1Uns4VV3XpkstugyQUF4-yIF8tqR-x09c',
+  ];
+
+  List<String> namesCategories = [
+    'Todos',
+    'Laptops',
+    'Accesorios',
+    'Gadgets',
+    'Phone/Tablets',
+    'Varios'
+  ];
+
+
+
+
   static const PLAY_STORE_URL =
       'https://play.google.com/store/apps/details?id=com.store.clikcus';
   static const APP_STORE_URL =
@@ -75,8 +99,13 @@ class _Landing_screenState extends State<Landing_screen2> {
 
   var outStockMap;
 
+  int _currentIndex;
+
   @override
   void initState() {
+
+    _currentIndex = 0;
+
     try {
       versionCheck(context);
     } catch (e) {
@@ -194,6 +223,8 @@ class _Landing_screenState extends State<Landing_screen2> {
   Widget build(BuildContext context) {
     int division = 8;
 
+    
+
     double screen_width = MediaQuery.of(context).size.width;
     double screen_height = MediaQuery.of(context).size.height;
 
@@ -271,6 +302,8 @@ class _Landing_screenState extends State<Landing_screen2> {
                         style: TextStyle(
                             fontSize: 25.0, fontWeight: FontWeight.bold),
                       ),
+
+                      /*
                       SizedBox(
                         height: 15.0,
                       ),
@@ -494,6 +527,49 @@ class _Landing_screenState extends State<Landing_screen2> {
                           ),
                         ),
                       ),
+                      
+                      */
+                      SizedBox(height: 20.0,),
+
+
+/*
+                Carousel category
+*/
+
+                      CarouselSlider(
+                        options: CarouselOptions(
+
+                          height: 200,
+                          enlargeCenterPage: true,
+                          onPageChanged: (position, reason){
+                            _currentIndex = position;
+                            setState(() {
+                              _currentIndex = position;
+                            });
+                          },
+                          enableInfiniteScroll: false
+                        ),
+                        items: images.map<Widget>((i){
+                          return Builder(
+                            builder: (BuildContext contect){
+                              return GestureDetector(
+                                onTap: (){
+                                  print("${_currentIndex}");
+                                  goToGroup(_currentIndex);
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(image: NetworkImage(i)),                                  
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+
+                      
 
 /*
             Ends categorical horizontal list
